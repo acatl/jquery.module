@@ -15,7 +15,7 @@
         i = 0
         splitNSLength = splitNS.length
 
-        while i < splitNSLength and currNSObj?
+        while i < splitNSLength and currNSObj isnt null
             currNSObj = (currNSObj[splitNS[i]] = currNSObj[splitNS[i]] or null)
             i++
         currNSObj
