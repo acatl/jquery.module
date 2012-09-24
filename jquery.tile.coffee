@@ -6,10 +6,7 @@
 ###
 
 (($, window) ->    
-    pluginName = "tile"
-    
-    defaults = {}
-
+    pluginName = "tile"    
     getNS = (namespaceStr) ->
         splitNS = namespaceStr.split(".")
         currNSObj = window
@@ -18,7 +15,7 @@
         i = 0
         splitNSLength = splitNS.length
 
-        while i < splitNSLength and currNSObj isnt null
+        while i < splitNSLength and currNSObj?
             currNSObj = (currNSObj[splitNS[i]] = currNSObj[splitNS[i]] or null)
             i++
         currNSObj
@@ -26,8 +23,7 @@
     Plugin = (element, options) ->
         @element = $(element)
         
-        @options = $.extend({}, defaults, options)
-        @_defaults = defaults
+        @options = options
         @_name = pluginName
         @init()
         @
@@ -38,7 +34,7 @@
         if tileClass
             nsObject = getNS(tileClass)
             try
-                nsObject $el
+                nsObject $el, @options
             catch e
                 console.log "Tile error on: [" + tileClass + "]", e
 
