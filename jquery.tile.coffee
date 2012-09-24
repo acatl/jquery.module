@@ -42,11 +42,6 @@
             catch e
                 console.log "Tile error on: [" + tileClass + "]", e
 
-
-    Plugin::aMethod = (d)->
-        console.log "aMethod", d, this, @element
-        @element.text(@element.text() + @element.data("tile-something"));
-
     # A really lightweight plugin wrapper around the constructor, 
     # preventing against multiple instantiations
     $.fn[pluginName] = (options) ->
@@ -60,10 +55,3 @@
                 $.data this, "plugin_" + pluginName, new Plugin(this, options)
 
 ) jQuery, window
-
-
-
-
-$(".tile").tile()
-
-$(".tile").tile("aMethod", 2)
