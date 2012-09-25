@@ -27,7 +27,8 @@ window.MySnippet = function (element) {
 ```
 
 ### Step 2.
-Attatch the snippet to your document element:
+Attatch the snippet to your document element by asigning the name of your 
+snippet to the element's custom `data-tile-class` attriute:
 
 ```html
 <div class="tile-me" data-tile-class="MySnippet">I'm being snippnetized</div>
