@@ -3,7 +3,12 @@ jquery.tile plugin
 
 jQuery plugin that helps encapsulate javascript snippets to a specific element - keeps code organized.
 
+Snippets act as **decorators** where they are passed as the first parameter `element` a reference to the DOM element 
+to which the snippet is being attached to, and a second argument is an optional `options` object which 
+may be passed when attaching the plugin to your jquery element.
 
+Each execution of a class is wrapped on a `try..catch` statement so, if an error 
+occurs, the plugin will continue to the next class or element found.
 
 
 ## Situation: 
@@ -60,7 +65,6 @@ window.domain = {
 }
 ```
 
-
 ### Passing options
 
 ```js
@@ -73,3 +77,12 @@ $(function() {
 });
 ```
 
+### Passing more than one class
+You may attatch more than one class to your jquery element, attatchment will 
+occur in the order of left from right: 
+
+*note: each class should be separated by a `,`.
+
+```html
+<form class="client-form" data-tile-class="domain.app.ClientForm, domain.app.ValidateForm"></form>
+```

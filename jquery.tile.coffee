@@ -5,7 +5,7 @@
     Licensed under the MIT License.
 ###
 
-(($, window) ->    
+(($, window) ->
     pluginName = "tile"    
     getNS = (namespaceStr) ->
         splitNS = namespaceStr.split(".")
@@ -32,11 +32,14 @@
         $el = @element
         tileClass = $el.data("tile-class")
         if tileClass
-            nsObject = getNS(tileClass)
-            try
-                nsObject $el, @options
-            catch e
-                console.log "Tile error on: [" + tileClass + "]", e
+            classes = tileClass.replace(/\s/g, "").split(",")
+            until classes.length is 0
+                nsClass = classes.shift()
+                nsObject = getNS(nsClass)
+                try
+                    nsObject $el, @options
+                catch e
+                    console.log "Tile error on: [" + nsClass + "]", e
 
     # A really lightweight plugin wrapper around the constructor, 
     # preventing against multiple instantiations
