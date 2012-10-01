@@ -1,12 +1,12 @@
 ###
-    jquery.tile.js
+    jquery.module.js
 
     Copyright 2012, Acatl Pacheco
     Licensed under the MIT License.
 ###
 
 (($, window) ->
-    pluginName = "tile"    
+    pluginName = "module"    
     getNS = (namespaceStr) ->
         splitNS = namespaceStr.split(".")
         currNSObj = window
@@ -30,16 +30,16 @@
 
     Plugin::init = -> 
         $el = @element
-        tileClass = $el.data("tile-class")
-        if tileClass
-            classes = tileClass.replace(/\s/g, "").split(",")
+        moduleClass = $el.data("module-class")
+        if moduleClass
+            classes = moduleClass.replace(/\s/g, "").split(",")
             until classes.length is 0
                 nsClass = classes.shift()
                 nsObject = getNS(nsClass)
                 try
                     nsObject $el, @options
                 catch e
-                    console.log "Tile error on: [" + nsClass + "]", e
+                    console.log "module error on: [" + nsClass + "]", e
 
     # A really lightweight plugin wrapper around the constructor, 
     # preventing against multiple instantiations

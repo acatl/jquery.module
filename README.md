@@ -1,5 +1,4 @@
-jquery.tile plugin
-==================
+# jquery.module plugin
 
 jQuery plugin that helps encapsulate javascript snippets to a specific element - keeps code organized.
 
@@ -39,10 +38,10 @@ window.MySnippet = function (element) {
 
 ### Step 2.
 Attatch the snippet to your document element by asigning the name of your 
-snippet to the element's custom `data-tile-class` attriute:
+snippet to the element's custom `data-module-class` attriute:
 
 ```html
-<div class="tile-me" data-tile-class="MySnippet">I'm being snippnetized</div>
+<div class="module-me" data-module-class="MySnippet">I'm being snippnetized</div>
 ```
 
 ### Step 3. 
@@ -50,15 +49,15 @@ run the plugin:
 
 ```js
 $(function() {
-    $(".tile-me").tile();
+    $(".module-me").module();
 });
 ```
 
-### Namespaced tiles
+### Namespaced modules
 To keep things even more organized you may want to namespace your snippets:
 
 ```html
-<form class="client-form" data-tile-class="domain.app.ClientForm"></form>
+<form class="client-form" data-module-class="domain.app.ClientForm"></form>
 ```
 
 ```js
@@ -79,7 +78,7 @@ window.MySnippet = function (element, options) {
 }
 
 $(function() {
-    $(".tile-me").tile({name: "Darek"});
+    $(".module-me").module({name: "Darek"});
 });
 ```
 
@@ -90,5 +89,5 @@ occur in the order from left to right:
 *note: each class should be separated by a `,`.
 
 ```html
-<form class="client-form" data-tile-class="domain.app.ClientForm, domain.app.ValidateForm"></form>
+<form class="client-form" data-module-class="domain.app.ClientForm, domain.app.ValidateForm"></form>
 ```
