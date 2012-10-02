@@ -17,6 +17,15 @@
 </script>
 ```
 
+## Is this you?
+
++ Code is attached to element ids or classes which make your code depend on the DOM structure.
++ Unrelated pices of code only affecting certain parts of your DOM. 
++ Many JS blocks of code that do not relate to each other.
++ Too many uncecesary points of entry.
+
+## How to use:
+
 Attatch javascript snippets directly to your jquery elements.
 
 Each snippet acts as a [decorator](http://addyosmani.com/blog/decorator-pattern/), with the following signature: 
@@ -31,18 +40,6 @@ function (element, options) { /*implement*/ };
 
 Each execution of a class is wrapped on a `try..catch` statement so, if an error 
 occurs, the plugin will continue to the next class or element found.
-
-
-## Situation: 
-
-You have a site that has a bunch JS blocks of code that do not relate to each 
-other and are only implemented to specific elements in the DOM.
-
-## Problem: 
-You end up with a huge JS file with a bunch of unrelated code. and maybe more
-than one  point of entry.
-
-## Solution:
 
 ### Step 1.
 You write your snippet:
