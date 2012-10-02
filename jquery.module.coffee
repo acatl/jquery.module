@@ -20,6 +20,20 @@
             i++
         currNSObj
 
+    attatchModules = (element, modules, options) ->
+        return unless modules
+
+        modules = modules.replace(/\s/g, "").split(",") if typeof modules is "string" 
+        modules = [modules] unless jQuery.isArray modules
+
+        until modules.length is 0
+            nsClass = modules.shift()
+            module = if typeof nsClass is "string" then getNS(nsClass) else nsClass
+            try
+                module element, options
+            catch e
+                console.log "module error on: [" + nsClass + "]", e
+                
     Plugin = (element, options) ->
         @element = $(element)
         
@@ -29,18 +43,11 @@
         @
 
     Plugin::init = -> 
-        $el = @element
-        moduleClass = $el.data("module-class")
-        if moduleClass
-            classes = moduleClass.replace(/\s/g, "").split(",")
-            until classes.length is 0
-                nsClass = classes.shift()
-                nsObject = getNS(nsClass)
-                try
-                    nsObject $el, @options
-                catch e
-                    console.log "module error on: [" + nsClass + "]", e
-
+        @add @element.data("module-class"), @options
+        
+    Plugin::add = (module, options) -> 
+        attatchModules @element, module, options
+        
     # A really lightweight plugin wrapper around the constructor, 
     # preventing against multiple instantiations
     $.fn[pluginName] = (options) ->
