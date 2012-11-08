@@ -52,7 +52,7 @@ window.MySnippet = function (element) {
 
 ### Step 2.
 Attatch the snippet to your document element by asigning the name of your 
-snippet to the element's custom `data-module-class` attriute:
+snippet to the element's custom `data-module-class` attribute:
 
 ```html
 <div class="module-me" data-module-class="MySnippet">
