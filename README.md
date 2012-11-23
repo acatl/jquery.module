@@ -141,6 +141,10 @@ $(".client-form").module("add", domain.app.ConfirmSubmit, {title:"Please Confirm
 
 ### Tracing to console classes being attached
 
+Note: 
+* only use it for debuging
+* only works for string declared classes
+
 Passing a second parameter with `true` to the plugin will output to the console 
 the classes beign attached.
 
