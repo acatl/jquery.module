@@ -139,7 +139,29 @@ To pass **options** to your module:
 $(".client-form").module("add", domain.app.ConfirmSubmit, {title:"Please Confirm"});
 ```
 
+### Tracing to console classes being attached
 
+Passing a second parameter with `true` to the plugin will output to the console 
+the classes beign attached.
+
+```html
+<form class="client-form" 
+      data-module-class="domain.app.ClientForm, domain.app.ValidateForm">
+</form>
+```
+
+```js
+$(function() {
+    $(".client-form").module({}, true);
+});
+```
+
+output: 
+
+```
+module: domain.app.ClientForm
+module: domain.app.ValidateForm
+```
 
 
 

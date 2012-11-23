@@ -7,6 +7,7 @@
 
 (($, window) ->
     pluginName = "module"    
+    traceClasses = false
     getNS = (namespaceStr) ->
         splitNS = namespaceStr.split(".")
         currNSObj = window
@@ -14,7 +15,7 @@
         i = undefined
         i = 0
         splitNSLength = splitNS.length
-
+        console.log "module: #{namespaceStr}" if traceClasses
         while i < splitNSLength and currNSObj isnt null
             currNSObj = (currNSObj[splitNS[i]] = currNSObj[splitNS[i]] or null)
             i++
@@ -48,10 +49,9 @@
     Plugin::add = (module, options) -> 
         attatchModules @element, module, options
         
-    # A really lightweight plugin wrapper around the constructor, 
-    # preventing against multiple instantiations
-    $.fn[pluginName] = (options) ->
+    $.fn[pluginName] = (options, trace) ->
         callArgs = arguments
+        traceClasses = trace
         @each ->
             pluginInstance = $.data(this, "plugin_" + pluginName)
             if pluginInstance
