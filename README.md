@@ -41,14 +41,39 @@ function (element, options) { /*implement*/ };
 Each execution of a class is wrapped on a `try..catch` statement so, if an error 
 occurs, the plugin will continue to the next class or element found.
 
+## EXAMPLE:
+
+[jsFiddle demo](http://jsfiddle.net/acatl/YhJ74/)
+
 ### Step 1.
-You write your snippet:
+You may write your snippet as a function:
 
 ```js
-window.MySnippet = function (element) {
+// @param element reference to DOM object to which module is attached
+// @param options Object passed to the plugin with custom options
+window.MySnippet = function (element, options) {
     element.text("hello world!")
 }
 ```
+Or you may also write it as an Object. 
+
+```js
+window.MyObject = {
+    // default options
+    options: {
+        text: "hello world!"
+    },
+    // module plugin will look for a init() method
+    // to initialize your module.
+    init: function () {
+        // this.element is a reference to DOM object
+        this.element.text(this.options.text);
+    }
+}
+```
+
+Note: When an object you can access the `element` through `this.element`.
+
 
 ### Step 2.
 Attatch the snippet to your document element by asigning the name of your 
