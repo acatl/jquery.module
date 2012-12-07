@@ -31,7 +31,20 @@
             nsClass = modules.shift()
             module = if typeof nsClass is "string" then getNS(nsClass) else nsClass
             try
-                module element, options
+                if typeof(module) is "function"
+                    module element, options
+                else 
+                    newModule = 
+                        element:{}
+                        options:{}
+
+                    $.extend newModule, module
+                    
+                    newModule.element = element
+                    $.extend(newModule.options, options or {})
+
+                    newModule.init && newModule.init()
+
             catch e
                 console.log "module error on: [" + nsClass + "]", e
                 
