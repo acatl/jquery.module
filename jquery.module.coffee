@@ -62,15 +62,16 @@
     Plugin::add = (module, options) -> 
         attatchModules @element, module, options
         
-    $.fn[pluginName] = (options, trace) ->
+    $.fn[pluginName] = (method, trace) ->
         callArgs = arguments
         traceClasses = trace
         @each ->
             pluginInstance = $.data(this, "plugin_" + pluginName)
-            if pluginInstance
-                if pluginInstance[options]
-                    pluginInstance[options].apply( pluginInstance, Array.prototype.slice.call( callArgs, 1 ))
+
+            if pluginInstance 
+                pluginMethod = pluginInstance[method] or pluginInstance.init
+                pluginMethod.apply( pluginInstance, Array.prototype.slice.call( callArgs, 1 ))
             else
-                $.data this, "plugin_" + pluginName, new Plugin(this, options)
+                $.data this, "plugin_" + pluginName, new Plugin(this, method)
 
 ) jQuery, window
