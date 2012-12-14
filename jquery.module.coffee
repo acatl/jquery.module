@@ -12,10 +12,9 @@
         splitNS = namespaceStr.split(".")
         currNSObj = window
         splitNSLength = undefined
-        i = undefined
         i = 0
         splitNSLength = splitNS.length
-        console.log "module: #{namespaceStr}" if traceClasses
+        console.log "module: #{namespaceStr}" if traceClasses and window.console
         while i < splitNSLength and currNSObj isnt null
             currNSObj = (currNSObj[splitNS[i]] = currNSObj[splitNS[i]] or null)
             i++
@@ -43,10 +42,11 @@
                     newModule.element = element
                     $.extend(newModule.options, options or {})
 
-                    newModule.init && newModule.init()
+                    newModule.init() if newModule.init
 
             catch e
-                console.log "module error on: [" + nsClass + "]", e
+                 console.log "module error on: [" + nsClass + "]", e if window.console
+        element
                 
     Plugin = (element, options) ->
         @element = $(element)
