@@ -1,7 +1,7 @@
 ###
     jquery.module.js
 
-    Copyright 2012, Acatl Pacheco
+    Copyright 2013, Acatl Pacheco
     Licensed under the MIT License.
 ###
 
@@ -30,8 +30,15 @@
             nsClass = modules.shift()
             module = if typeof nsClass is "string" then getNS(nsClass) else nsClass
             try
+                api = element.data("#{nsClass}.api") or {}
+
                 if typeof(module) is "function"
-                    module element, options
+                    fnText = module.toString();
+                    argDecl = fnText.match(/^function\s*[^\(]*\(\s*([^\)]*)\)/m)[1].replace(/\s+/g,'').split(',')
+                    args = [api, element, options]
+                    # for now only basic support
+                    args.shift() if argDecl[0] isnt "api"
+                    module.apply(module, args) 
                 else 
                     newModule = 
                         element:{}
@@ -39,13 +46,16 @@
 
                     $.extend newModule, module
                     
+                    newModule.api = api
                     newModule.element = element
                     $.extend(newModule.options, options or {})
 
                     newModule.init() if newModule.init
 
+                element.data "#{nsClass}.api", api
+
             catch e
-                 console.log "module error on: [" + nsClass + "]", e if window.console
+                 console.info "module error on: [" + nsClass + "]", e.message if window.console
         element
                 
     Plugin = (element, options) ->
@@ -57,7 +67,7 @@
         @
 
     Plugin::init = -> 
-        @add @element.data("module-class"), @options
+        @add @element.data("module"), @options
         
     Plugin::add = (module, options) -> 
         attatchModules @element, module, options

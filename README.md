@@ -2,22 +2,24 @@
 *"Separate DOM structure from application logic"*
 
 ```html
-<form data-module-class="domain.app.FormValidation">
+<form data-module="domain.app.FormValidation">
     ...
 </form>
 
 <script>
-    domain.app.FormValidation = function (element, options) {
+    domain.app.FormValidation = function (api, element, options) {
         // add logic.
     }
+    // or alternatively use old signature - with out 'api' parameter
+    //domain.app.FormValidation = function (element, options) {
 
     $(function() {
-        $("[data-module-class]").module();
+        $("[data-module]").module();
     });
 </script>
 ```
 
-## Is this you?
+## what made me do this.
 
 + Code is attached to element ids or classes which make your code depend on the DOM structure.
 + Unrelated pices of code only affecting certain parts of your DOM. 
@@ -31,8 +33,9 @@ Attatch javascript snippets directly to your jquery elements.
 Each snippet acts as a [decorator](http://addyosmani.com/blog/decorator-pattern/), with the following signature: 
 
 ```js
-function (element, options) { /*implement*/ };
+function (api, element, options) { /*implement*/ };
 ```
+`api` is an object to attach what ever you want exposed to the outside, this makes tesing your js easier
 
 `element` is a reference to the DOM element to which the snippet is being attached to.
 
@@ -55,7 +58,7 @@ window.MySnippet = function (element, options) {
     element.text("hello world!")
 }
 ```
-Or you may also write it as an Object. 
+[depracated] Or you may also write it as an Object. - now more in favour of using the 'api' argument
 
 ```js
 window.MyObject = {
@@ -77,10 +80,10 @@ Note: When an object you can access the `element` through `this.element`.
 
 ### Step 2.
 Attatch the snippet to your document element by asigning the name of your 
-snippet to the element's custom `data-module-class` attribute:
+snippet to the element's custom `data-module` attribute:
 
 ```html
-<div class="module-me" data-module-class="MySnippet">
+<div class="module-me" data-module="MySnippet">
     I'm being snippnetized
 </div>
 ```
@@ -98,14 +101,14 @@ $(function() {
 To keep things even more organized you may want to namespace your snippets:
 
 ```html
-<form class="client-form" data-module-class="domain.app.ClientForm">
+<form class="client-form" data-module="domain.app.ClientForm">
 </form>
 ```
 
 ```js
 window.domain = {
     app: {
-        ClientForm: function (element) {
+        ClientForm: function (api, element) {
             element.on("submit", function () { /* do something */ } );
         }
     }
@@ -115,7 +118,7 @@ window.domain = {
 ### Passing options
 
 ```js
-window.MySnippet = function (element, options) {
+window.MySnippet = function (api, element, options) {
     element.text("hello " + options.name + "!")
 }
 
@@ -133,35 +136,8 @@ occur in the order from left to right:
 
 ```html
 <form class="client-form" 
-      data-module-class="domain.app.ClientForm, domain.app.ValidateForm">
+      data-module="domain.app.ClientForm, domain.app.ValidateForm">
 </form>
-```
-
-### Adding modules at runtime
-
-To add a module to a jquery element at runtime you can do it by using the method 
-`add`:
-
-```js
-// initialize plugin
-$(".client-form").module();
-
-// Option 1
-$(".client-form").module("add", domain.app.ConfirmSubmit);
-
-// Option 2 (module can be a string, let the plugin
-// look for the namespace)
-$(".client-form").module("add", "domain.app.ConfirmSubmit");
-
-// Option 3 You may add multiple modules passing an array
-$(".client-form").module("add", ["domain.app.ConfirmSubmit", domain.app.ValidateForm]);
-
-```
-
-To pass **options** to your module: 
-
-```js
-$(".client-form").module("add", domain.app.ConfirmSubmit, {title:"Please Confirm"});
 ```
 
 ### Tracing to console classes being attached
@@ -175,7 +151,7 @@ the classes beign attached.
 
 ```html
 <form class="client-form" 
-      data-module-class="domain.app.ClientForm, domain.app.ValidateForm">
+      data-module="domain.app.ClientForm, domain.app.ValidateForm">
 </form>
 ```
 
