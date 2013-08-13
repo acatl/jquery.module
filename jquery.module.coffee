@@ -28,16 +28,17 @@
 
         modulesAttached = (element.data 'modules-attached')
         modulesAttached = if modulesAttached then modulesAttached.split(',') else []
+        allowMultiple = api.multiple is true
 
         until modules.length is 0
             nsClass = modules.shift()
             moduleUnified = nsClass.replace(/\./g, "")
             module = if typeof nsClass is "string" then getNS(nsClass)
+            alreadyAttached = modulesAttached.indexOf(moduleUnified) isnt -1
             
-            if modulesAttached.indexOf(moduleUnified) isnt -1
-                throw "module '#{nsClass}' already instantianted" unless api.multiple
+            if alreadyAttached and not allowMultiple
+                # fail silently for now
                 continue 
-
             try
                 api = element.data("#{nsClass}.api") or api or {}
 
@@ -60,7 +61,7 @@
                     newModule.init() if newModule.init
 
                 element.data "#{nsClass}.api", api
-                modulesAttached.push moduleUnified
+                modulesAttached.push moduleUnified unless alreadyAttached 
 
             catch e
                  console.info "module error on: [" + nsClass + "]", e.message if window.console

@@ -30,7 +30,7 @@
       return currNSObj;
     };
     attatchModules = function(element, modules, api) {
-      var argDecl, args, e, fnText, module, moduleUnified, modulesAttached, newModule, nsClass;
+      var allowMultiple, alreadyAttached, argDecl, args, e, fnText, module, moduleUnified, modulesAttached, newModule, nsClass;
 
       if (!modules) {
         return;
@@ -43,14 +43,13 @@
       }
       modulesAttached = element.data('modules-attached');
       modulesAttached = modulesAttached ? modulesAttached.split(',') : [];
+      allowMultiple = api.multiple === true;
       while (modules.length !== 0) {
         nsClass = modules.shift();
         moduleUnified = nsClass.replace(/\./g, "");
         module = typeof nsClass === "string" ? getNS(nsClass) : void 0;
-        if (modulesAttached.indexOf(moduleUnified) !== -1) {
-          if (!api.multiple) {
-            throw "module '" + nsClass + "' already instantianted";
-          }
+        alreadyAttached = modulesAttached.indexOf(moduleUnified) !== -1;
+        if (alreadyAttached && !allowMultiple) {
           continue;
         }
         try {
@@ -75,7 +74,9 @@
             }
           }
           element.data("" + nsClass + ".api", api);
-          modulesAttached.push(moduleUnified);
+          if (!alreadyAttached) {
+            modulesAttached.push(moduleUnified);
+          }
         } catch (_error) {
           e = _error;
           if (window.console) {

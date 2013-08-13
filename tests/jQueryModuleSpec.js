@@ -23,7 +23,13 @@ describe("jquery.Module", function() {
         };
 
         window.domain.MyModuleSecond = function(api, element, options) {
-            api.someSecondValue = 1; 
+            if(api.someSecondValue) {
+                console.info('here again');
+                api.someSecondValue ++;        
+            } else {
+                api.someSecondValue = 1;     
+            }
+            
         };
     });
 
@@ -68,22 +74,14 @@ describe("jquery.Module", function() {
         it("should only be instantiated once", function() {
             var errorThrown = false;
             element.module();
-            try {
-                element.module();
-            } catch (e) {
-                errorThrown = true;
-            }
-            expect(errorThrown).toBe(true);
+            element.module();
+            expect(element.data("modules-attached")).toBe("domainMyModule,domainMyModuleSecond");
         });
-        it("should fail silently if 'multiple' flag is set to true", function() {
+        it("should allow multiple instances if 'multiple' flag is set to true", function() {
             var errorThrown = false;
             element.module();
-            try {
-                element.module({multiple:true});
-            } catch (e) {
-                errorThrown = true;
-            }
-            expect(errorThrown).toBe(false);
+            element.module({multiple:true});
+            expect(element.data('domain.MyModuleSecond.api').someSecondValue).toBe(2);
         });
         it("should allow to add more modules even if already instantianted", function() {
             var errorThrown = false;

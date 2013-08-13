@@ -116,8 +116,9 @@ window.domain = {
 }
 ```
 ### Multiple instances
-Multiple instances of a module are not allowed. If `selector.module()` was to get called multiple times on the same selector the plugin will throw an error.
-To fail silently you may add a flag in the options object:
+Multiple instances of a module are not allowed by default. If the same `module class` is called multiple times on the same element, it will just ignore the duplicates. 
+Unless this behaviour is wanted then enable the flag `multiple' set to true;
+
 ```js
 $(function() {
     $(".module-me").module({multiple: true});
