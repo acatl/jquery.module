@@ -29,8 +29,8 @@
       }
       return currNSObj;
     };
-    attatchModules = function(element, modules, options) {
-      var api, argDecl, args, e, fnText, module, newModule, nsClass;
+    attatchModules = function(element, modules, api) {
+      var argDecl, args, e, fnText, module, moduleUnified, modulesAttached, newModule, nsClass;
 
       if (!modules) {
         return;
@@ -41,33 +41,41 @@
       if (!jQuery.isArray(modules)) {
         modules = [modules];
       }
+      modulesAttached = element.data('modules-attached');
+      modulesAttached = modulesAttached ? modulesAttached.split(',') : [];
       while (modules.length !== 0) {
         nsClass = modules.shift();
-        module = typeof nsClass === "string" ? getNS(nsClass) : nsClass;
+        moduleUnified = nsClass.replace(/\./g, "");
+        module = typeof nsClass === "string" ? getNS(nsClass) : void 0;
+        if (modulesAttached.indexOf(moduleUnified) !== -1) {
+          if (!api.multiple) {
+            throw "module '" + nsClass + "' already instantianted";
+          }
+          continue;
+        }
         try {
-          api = element.data("" + nsClass + ".api") || {};
+          api = element.data("" + nsClass + ".api") || api || {};
           if (typeof module === "function") {
             fnText = module.toString();
             argDecl = fnText.match(/^function\s*[^\(]*\(\s*([^\)]*)\)/m)[1].replace(/\s+/g, '').split(',');
-            args = [api, element, options];
+            args = [api, element];
             if (argDecl[0] !== "api") {
               args.shift();
             }
             module.apply(module, args);
           } else {
             newModule = {
-              element: {},
-              options: {}
+              element: {}
             };
             $.extend(newModule, module);
             newModule.api = api;
             newModule.element = element;
-            $.extend(newModule.options, options || {});
             if (newModule.init) {
               newModule.init();
             }
           }
           element.data("" + nsClass + ".api", api);
+          modulesAttached.push(moduleUnified);
         } catch (_error) {
           e = _error;
           if (window.console) {
@@ -75,20 +83,24 @@
           }
         }
       }
+      element.data('modules-attached', modulesAttached.join(','));
       return element;
     };
-    Plugin = function(element, options) {
+    Plugin = function(element, api) {
       this.element = $(element);
-      this.options = options;
+      this.api = api;
       this._name = pluginName;
-      this.init();
+      this.init(api);
       return this;
     };
-    Plugin.prototype.init = function() {
-      return this.add(this.element.data("module"), this.options);
+    Plugin.prototype.init = function(api) {
+      if (api == null) {
+        api = {};
+      }
+      return this.add(this.element.data("module"), api);
     };
-    Plugin.prototype.add = function(module, options) {
-      return attatchModules(this.element, module, options);
+    Plugin.prototype.add = function(module, api) {
+      return attatchModules(this.element, module, api);
     };
     return $.fn[pluginName] = function(method, trace) {
       var callArgs;
@@ -96,12 +108,11 @@
       callArgs = arguments;
       traceClasses = trace;
       return this.each(function() {
-        var pluginInstance, pluginMethod;
+        var pluginInstance;
 
         pluginInstance = $.data(this, "plugin_" + pluginName);
         if (pluginInstance) {
-          pluginMethod = pluginInstance[method] || pluginInstance.init;
-          return pluginMethod.apply(pluginInstance, Array.prototype.slice.call(callArgs, 1));
+          return pluginInstance.init.apply(pluginInstance, callArgs);
         } else {
           return $.data(this, "plugin_" + pluginName, new Plugin(this, method));
         }

@@ -21,7 +21,8 @@
 
 ## what made me do this.
 
-+ Code is attached to element ids or classes which make your code depend on the DOM structure.
++ This is a blog/CMS/etc app where components are unrelated most of the time
++ Code is attached to element ids or classes which made my code depend on the DOM structure.
 + Unrelated pices of code only affecting certain parts of your DOM. 
 + Many JS blocks of code that do not relate to each other.
 + Too many uncecesary points of entry.
@@ -113,6 +114,14 @@ window.domain = {
         }
     }
 }
+```
+### Multiple instances
+Multiple instances of a module are not allowed. If `selector.module()` was to get called multiple times on the same selector the plugin will throw an error.
+To fail silently you may add a flag in the options object:
+```js
+$(function() {
+    $(".module-me").module({multiple: true});
+});
 ```
 
 ### Passing options

@@ -20,57 +20,67 @@
             i++
         currNSObj
 
-    attatchModules = (element, modules, options) ->
+    attatchModules = (element, modules, api) ->
         return unless modules
 
         modules = modules.replace(/\s/g, "").split(",") if typeof modules is "string" 
         modules = [modules] unless jQuery.isArray modules
 
+        modulesAttached = (element.data 'modules-attached')
+        modulesAttached = if modulesAttached then modulesAttached.split(',') else []
+
         until modules.length is 0
             nsClass = modules.shift()
-            module = if typeof nsClass is "string" then getNS(nsClass) else nsClass
+            moduleUnified = nsClass.replace(/\./g, "")
+            module = if typeof nsClass is "string" then getNS(nsClass)
+            
+            if modulesAttached.indexOf(moduleUnified) isnt -1
+                throw "module '#{nsClass}' already instantianted" unless api.multiple
+                continue 
+
             try
-                api = element.data("#{nsClass}.api") or {}
+                api = element.data("#{nsClass}.api") or api or {}
 
                 if typeof(module) is "function"
                     fnText = module.toString();
                     argDecl = fnText.match(/^function\s*[^\(]*\(\s*([^\)]*)\)/m)[1].replace(/\s+/g,'').split(',')
-                    args = [api, element, options]
+                    args = [api, element]
                     # for now only basic support
                     args.shift() if argDecl[0] isnt "api"
                     module.apply(module, args) 
                 else 
                     newModule = 
                         element:{}
-                        options:{}
 
                     $.extend newModule, module
                     
                     newModule.api = api
                     newModule.element = element
-                    $.extend(newModule.options, options or {})
 
                     newModule.init() if newModule.init
 
                 element.data "#{nsClass}.api", api
+                modulesAttached.push moduleUnified
 
             catch e
                  console.info "module error on: [" + nsClass + "]", e.message if window.console
+
+        element.data 'modules-attached', modulesAttached.join ','
         element
                 
-    Plugin = (element, options) ->
+    Plugin = (element, api) ->
         @element = $(element)
         
-        @options = options
+        @api = api
         @_name = pluginName
-        @init()
+        @init(api)
         @
 
-    Plugin::init = -> 
-        @add @element.data("module"), @options
+    Plugin::init = (api={})-> 
+        @add @element.data("module"), api
         
-    Plugin::add = (module, options) -> 
-        attatchModules @element, module, options
+    Plugin::add = (module, api) -> 
+        attatchModules @element, module, api
         
     $.fn[pluginName] = (method, trace) ->
         callArgs = arguments
@@ -79,8 +89,7 @@
             pluginInstance = $.data(this, "plugin_" + pluginName)
 
             if pluginInstance 
-                pluginMethod = pluginInstance[method] or pluginInstance.init
-                pluginMethod.apply( pluginInstance, Array.prototype.slice.call( callArgs, 1 ))
+                pluginInstance.init.apply(pluginInstance, callArgs)
             else
                 $.data this, "plugin_" + pluginName, new Plugin(this, method)
 

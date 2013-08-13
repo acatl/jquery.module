@@ -6,7 +6,7 @@ describe("jquery.Module", function() {
 
 
     beforeEach(function() {
-        element = $("<div data-module=\"domain.MyModule\"></div>");
+        element = $("<div data-module=\"domain.MyModule,domain.MyModuleSecond\"></div>");
         window.domain = window.domain || {};
         window.domain.MyModule = function(api, element, options) {
             api.someValue = 1; 
@@ -20,6 +20,10 @@ describe("jquery.Module", function() {
                 element.removeClass("some-class");
             };
             api.addClassTest();
+        };
+
+        window.domain.MyModuleSecond = function(api, element, options) {
+            api.someSecondValue = 1; 
         };
     });
 
@@ -57,6 +61,48 @@ describe("jquery.Module", function() {
             element.module();
             expect(element.hasClass("some-class")).toBe(true);
         });
+        it("unified instance name should be injected", function() {
+            element.module();
+            expect(element.data("modules-attached")).toBe("domainMyModule,domainMyModuleSecond");
+        });
+        it("should only be instantiated once", function() {
+            var errorThrown = false;
+            element.module();
+            try {
+                element.module();
+            } catch (e) {
+                errorThrown = true;
+            }
+            expect(errorThrown).toBe(true);
+        });
+        it("should fail silently if 'multiple' flag is set to true", function() {
+            var errorThrown = false;
+            element.module();
+            try {
+                element.module({multiple:true});
+            } catch (e) {
+                errorThrown = true;
+            }
+            expect(errorThrown).toBe(false);
+        });
+        it("should allow to add more modules even if already instantianted", function() {
+            var errorThrown = false;
+            element.module();
+            element.data('module', 'domain.MyModuleThird');
+
+            window.domain.MyModuleThird = function(api, element, options) {
+                api.someThirdValue = 1; 
+            };
+
+            try {
+                element.module({multiple:true});
+            } catch (e) {
+                errorThrown = true;
+            }
+            expect(errorThrown).toBe(false);
+            expect(element.data("modules-attached")).toBe("domainMyModule,domainMyModuleSecond,domainMyModuleThird");
+        });
+
     });
 });
 
