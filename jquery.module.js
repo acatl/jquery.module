@@ -48,7 +48,7 @@
         nsClass = modules.shift();
         moduleUnified = nsClass.replace(/\./g, "");
         module = typeof nsClass === "string" ? getNS(nsClass) : void 0;
-        alreadyAttached = modulesAttached.indexOf(moduleUnified) !== -1;
+        alreadyAttached = jQuery.inArray(moduleUnified, modulesAttached) !== -1;
         if (alreadyAttached && !allowMultiple) {
           continue;
         }
