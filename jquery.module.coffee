@@ -5,9 +5,11 @@
     Licensed under the MIT License.
 ###
 
-(($, window) ->
+do($=jQuery, window=window) ->
+
     pluginName = "module"    
     traceClasses = false
+    
     getNS = (namespaceStr) ->
         splitNS = namespaceStr.split(".")
         currNSObj = window
@@ -34,7 +36,11 @@
             nsClass = modules.shift()
             moduleUnified = nsClass.replace(/\./g, "")
             module = if typeof nsClass is "string" then getNS(nsClass)
-            alreadyAttached = jQuery.inArray(moduleUnified, modulesAttached) isnt -1
+
+            if !Array.prototype.indexOf 
+                alreadyAttached = jQuery.inArray(moduleUnified, modulesAttached) isnt -1
+            else 
+                alreadyAttached = modulesAttached.indexOf(moduleUnified) isnt -1
             
             if alreadyAttached and not allowMultiple
                 # fail silently for now
@@ -93,5 +99,3 @@
                 pluginInstance.init.apply(pluginInstance, callArgs)
             else
                 $.data this, "plugin_" + pluginName, new Plugin(this, method)
-
-) jQuery, window

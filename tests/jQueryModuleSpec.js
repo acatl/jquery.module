@@ -2,42 +2,38 @@
 
 describe("jquery.Module", function() {
     var element;
-    
-
-
     beforeEach(function() {
         element = $("<div data-module=\"domain.MyModule,domain.MyModuleSecond\"></div>");
         window.domain = window.domain || {};
         window.domain.MyModule = function(api, element, options) {
-            api.someValue = 1; 
-            api.doSomething = function () {
+            api.someValue = 1;
+            api.doSomething = function() {
                 return 2;
             };
-            api.addClassTest = function () {
+            api.addClassTest = function() {
                 element.addClass("some-class");
             };
-            api.removeClassTest = function () {
+            api.removeClassTest = function() {
                 element.removeClass("some-class");
             };
             api.addClassTest();
         };
 
         window.domain.MyModuleSecond = function(api, element, options) {
-            if(api.someSecondValue) {
-                console.info('here again');
-                api.someSecondValue ++;        
+            if (api.someSecondValue) {
+                api.someSecondValue++;
             } else {
-                api.someSecondValue = 1;     
+                api.someSecondValue = 1;
             }
-            
+
         };
     });
 
-    it("should be accesible globally", function () {
+    it("should be accesible globally", function() {
         expect($.fn.module).not.toBeUndefined();
     });
 
-    describe("implement", function () {
+    describe("implement", function() {
         it("should get plugin attached", function() {
             element.module();
             expect(element.data("plugin_module")).not.toBeUndefined();
@@ -80,7 +76,9 @@ describe("jquery.Module", function() {
         it("should allow multiple instances if 'multiple' flag is set to true", function() {
             var errorThrown = false;
             element.module();
-            element.module({multiple:true});
+            element.module({
+                multiple: true
+            });
             expect(element.data('domain.MyModuleSecond.api').someSecondValue).toBe(2);
         });
         it("should allow to add more modules even if already instantianted", function() {
@@ -89,11 +87,13 @@ describe("jquery.Module", function() {
             element.data('module', 'domain.MyModuleThird');
 
             window.domain.MyModuleThird = function(api, element, options) {
-                api.someThirdValue = 1; 
+                api.someThirdValue = 1;
             };
 
             try {
-                element.module({multiple:true});
+                element.module({
+                    multiple: true
+                });
             } catch (e) {
                 errorThrown = true;
             }
@@ -103,8 +103,3 @@ describe("jquery.Module", function() {
 
     });
 });
-
-
-
-
-

@@ -1,14 +1,12 @@
 {
   "name": "jquery.module",
-  "version": "0.0.1",
-  "description": "generate mock data objects",
+  "version": "0.1.0",
+  "description": "Separate DOM structure from application logic",
   "homepage": "https://github.com/acatl/jquery.module",
   "author": "Acatl Pacheco <acatl.pacheco@gmail.com>",
-  "license": [
-    {
-      "type": "MIT"
-    }
-  ],
+  "license": [{
+    "type": "MIT"
+  }],
   "keywords": [
     "jquery.module",
     "data",
