@@ -9,12 +9,10 @@
 (function() {
   (function($, window) {
     var Plugin, attatchModules, getNS, pluginName, traceClasses;
-
     pluginName = "module";
     traceClasses = false;
     getNS = function(namespaceStr) {
       var currNSObj, i, splitNS, splitNSLength;
-
       splitNS = namespaceStr.split(".");
       currNSObj = window;
       splitNSLength = void 0;
@@ -31,7 +29,6 @@
     };
     attatchModules = function(element, modules, api) {
       var allowMultiple, alreadyAttached, argDecl, args, e, fnText, module, moduleUnified, modulesAttached, newModule, nsClass;
-
       if (!modules) {
         return;
       }
@@ -105,12 +102,10 @@
     };
     return $.fn[pluginName] = function(method, trace) {
       var callArgs;
-
       callArgs = arguments;
       traceClasses = trace;
       return this.each(function() {
         var pluginInstance;
-
         pluginInstance = $.data(this, "plugin_" + pluginName);
         if (pluginInstance) {
           return pluginInstance.init.apply(pluginInstance, callArgs);
