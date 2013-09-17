@@ -34,7 +34,7 @@
             nsClass = modules.shift()
             moduleUnified = nsClass.replace(/\./g, "")
             module = if typeof nsClass is "string" then getNS(nsClass)
-            alreadyAttached = modulesAttached.indexOf(moduleUnified) isnt -1
+            alreadyAttached = jQuery.inArray(moduleUnified, modulesAttached) isnt -1
             
             if alreadyAttached and not allowMultiple
                 # fail silently for now
